@@ -8,6 +8,7 @@
 #include <process.h>
 #include <psapi.h>
 #include "PrintfColoring.h"
+#include "Application.h"
 
 char path_to_dll[256] = { 0 };
 char process_name[256] = { 0 };
@@ -87,6 +88,56 @@ DWORD select_pid(char process_name[]) {
 
 
 
-void start_app() {
-
+void start_app()
+{
+	printf_green("1. Load settings.ini file...\n");		select_dll_file();
+	if (process_name[0] == '\0')
+	{
+		printf_red("Process name is empty. Please check settings.ini file.\n");
+		return;
+	}
+	if (path_to_dll[0] == '\0')
+	{
+		printf_red("DLL path is empty. Please check settings.ini file.\n");
+			return;
+	}
+	printf_green("2. Find process id\n");
+	DWORD pid = select_pid(process_name);
+	if (pid == 0)
+	{
+		printf_red("Process '%s' not found. Please make sure the process is running.\n", process_name);
+	}
+	printf("Process ID:	% d\n", pid);
+	printf_green("3. Inject DLL into process...\n");
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+	if (hProcess == NULL)
+	{
+		printf("Failed to open process. Error: % d\n", GetLastError());
+		return 1;
+	}
+	LPVOID allocated_mem =
+		VirtualAllocEx(hProcess, NULL, strlen(path_to_dll) + 1,
+			MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+	if (allocated_mem == NULL)
+	{
+		printf("Failed to allocate memory in target process. Error: % d\n", GetLastError());
+		CloseHandle(hProcess);
+		return 1;
+	}
+	WriteProcessMemory(hProcess, allocated_mem, path_to_dll, strlen(path_to_dll) + 1, NULL);
+	HMODULE kernel32Base = GetModuleHandleA("kernel32.dll");
+	FARPROC load_library_address = GetProcAddress(kernel32Base, "LoadLibraryA");
+	HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)load_library_address, allocated_mem, 0, NULL);
+	if (hThread == NULL)
+	{
+		printf("Failed to create remote thread. Error: % d\n", GetLastError());
+		VirtualFreeEx(hProcess, allocated_mem, 0, MEM_RELEASE);
+		CloseHandle(hProcess);
+		return 1;
+	}
+	WaitForSingleObject(hThread,
+		INFINITE);
+	VirtualFreeEx(hProcess, allocated_mem, 0, MEM_RELEASE);
+	CloseHandle(hThread);
+	return 0;
 }
