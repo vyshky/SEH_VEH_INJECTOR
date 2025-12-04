@@ -9,26 +9,26 @@ void select_dll_file()
 	GetModuleFileNameA(NULL, ini_path, MAX_PATH);
 
 	char* slash = strrchr(ini_path, '\\');
-	if (slash) *(slash + 1) = 0; // оставить только каталог exe
+	if (slash) *(slash + 1) = 0; // РѕСЃС‚Р°РІРёС‚СЊ С‚РѕР»СЊРєРѕ РєР°С‚Р°Р»РѕРі exe
 
 	strcat_s(ini_path, MAX_PATH, "settings.ini"); // concatenate ini file name
 
 	GetPrivateProfileStringA(
-		"INJECTOR",        // секция
-		"PATH_TO_DLL",     // ключ
-		"",     // значение по умолчанию
-		path_to_dll,       // буфер
+		"INJECTOR",        // СЃРµРєС†РёСЏ
+		"PATH_TO_DLL",     // РєР»СЋС‡
+		"",     // Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+		path_to_dll,       // Р±СѓС„РµСЂ
 		sizeof(path_to_dll),
-		ini_path       // путь к ini
+		ini_path       // РїСѓС‚СЊ Рє ini
 	);
 
 	GetPrivateProfileStringA(
-		"INJECTOR",        // секция
-		"PROCESS_NAME",     // ключ
-		"",     // значение по умолчанию
-		process_name,       // буфер
+		"INJECTOR",        // СЃРµРєС†РёСЏ
+		"PROCESS_NAME",     // РєР»СЋС‡
+		"",     // Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+		process_name,       // Р±СѓС„РµСЂ
 		sizeof(process_name),
-		ini_path       // путь к ini
+		ini_path       // РїСѓС‚СЊ Рє ini
 	);
 
 	printf("DLL Path: %s\n", path_to_dll);
@@ -62,8 +62,8 @@ DWORD select_pid(char process_name[]) {
 
 			if (GetProcessImageFileNameA(hProcess, exeName, MAX_PATH))
 			{
-				const char* base = strrchr(exeName, '\\'); // ищет последнее вхождение '\'
-				base = base ? base + 1 : exeName; // сместить указатель на следующий символ после '\', или использовать весь путь, если '\' не найден
+				const char* base = strrchr(exeName, '\\'); // РёС‰РµС‚ РїРѕСЃР»РµРґРЅРµРµ РІС…РѕР¶РґРµРЅРёРµ '\'
+				base = base ? base + 1 : exeName; // СЃРјРµСЃС‚РёС‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЃР»РµРґСѓСЋС‰РёР№ СЃРёРјРІРѕР» РїРѕСЃР»Рµ '\', РёР»Рё РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РІРµСЃСЊ РїСѓС‚СЊ, РµСЃР»Рё '\' РЅРµ РЅР°Р№РґРµРЅ
 				if (_stricmp(base, target) == 0)
 				{
 					CloseHandle(hProcess);
