@@ -1,3 +1,4 @@
+#pragma once
 #include "pch.h"
 
 char path_to_dll[256] = { 0 };
