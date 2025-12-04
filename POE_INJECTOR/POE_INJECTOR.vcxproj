@@ -136,7 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="application.c" />
-    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="pch.c" />
     <ClCompile Include="POE_INJECTOR.c" />
     <ClCompile Include="printf_coloring.c" />
   </ItemGroup>
