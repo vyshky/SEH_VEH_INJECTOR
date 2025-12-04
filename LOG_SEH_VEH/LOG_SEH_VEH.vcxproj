@@ -134,9 +134,7 @@
     <ClCompile Include="LOG_SEH_VEH.c" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="callregs.obj">
-      <FileType>Document</FileType>
-    </Object>
+    <Object Include="callregs.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

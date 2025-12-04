@@ -1,14 +1,4 @@
-#pragma once
-
-#include<windows.h>
-#include <stdio.h>
-#include <winbase.h>
-#include <Commdlg.h>
-#include <tlhelp32.h>
-#include <process.h>
-#include <psapi.h>
-#include "PrintfColoring.h"
-#include "Application.h"
+#include "pch.h"
 
 char path_to_dll[256] = { 0 };
 char process_name[256] = { 0 };
@@ -88,26 +78,28 @@ DWORD select_pid(char process_name[]) {
 
 
 
-void start_app()
+int start_app()
 {
-	printf_green("1. Load settings.ini file...\n");		select_dll_file();
+	printf_green("1. Load settings.ini file...\n");
+	select_dll_file();
 	if (process_name[0] == '\0')
 	{
 		printf_red("Process name is empty. Please check settings.ini file.\n");
-		return;
+		return 1;
 	}
 	if (path_to_dll[0] == '\0')
 	{
 		printf_red("DLL path is empty. Please check settings.ini file.\n");
-			return;
+		return 1;
 	}
 	printf_green("2. Find process id\n");
 	DWORD pid = select_pid(process_name);
 	if (pid == 0)
 	{
 		printf_red("Process '%s' not found. Please make sure the process is running.\n", process_name);
+		return 1;
 	}
-	printf("Process ID:	% d\n", pid);
+	printf("Process ID: %d\n", pid);
 	printf_green("3. Inject DLL into process...\n");
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (hProcess == NULL)
@@ -115,9 +107,7 @@ void start_app()
 		printf("Failed to open process. Error: % d\n", GetLastError());
 		return 1;
 	}
-	LPVOID allocated_mem =
-		VirtualAllocEx(hProcess, NULL, strlen(path_to_dll) + 1,
-			MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+	LPVOID allocated_mem = VirtualAllocEx(hProcess, NULL, strlen(path_to_dll) + 1, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	if (allocated_mem == NULL)
 	{
 		printf("Failed to allocate memory in target process. Error: % d\n", GetLastError());
@@ -135,8 +125,7 @@ void start_app()
 		CloseHandle(hProcess);
 		return 1;
 	}
-	WaitForSingleObject(hThread,
-		INFINITE);
+	WaitForSingleObject(hThread, INFINITE);
 	VirtualFreeEx(hProcess, allocated_mem, 0, MEM_RELEASE);
 	CloseHandle(hThread);
 	return 0;

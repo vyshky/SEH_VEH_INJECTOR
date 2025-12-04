@@ -1,6 +1,5 @@
 #pragma once
-#include<windows.h>
-#include <stdio.h>
+#include "pch.h"
 
 void printf_red(const char* format, ...) {
 	va_list args;

@@ -18,18 +18,24 @@
     <ClCompile Include="POE_INJECTOR.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="application.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="printf_coloring.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PrintfColoring.c">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.c">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
+    <ClInclude Include="application.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="PrintfColoring.h">
+    <ClInclude Include="printf_coloring.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

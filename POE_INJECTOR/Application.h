@@ -1,3 +1,1 @@
-#pragma once
-
-void start_app();
+int start_app(void);
